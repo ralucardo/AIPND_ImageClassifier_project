@@ -149,7 +149,7 @@ def train_model (model, criterion, optimizer, device,train_loader, epochs = 4):
     running_loss = 0
     print_every = 5
     for epoch in range(epochs):
-        for (inputs, labels) in train_loader:
+        for inputs, labels in train_loader:
             steps += 1
         
             inputs, labels = inputs.to(device), labels.to(device)
