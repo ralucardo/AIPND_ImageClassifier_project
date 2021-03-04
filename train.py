@@ -46,7 +46,7 @@ filepath = args.filepath
 train_loader, valid_loader, test_loader = workspaceutils.loading_data(path)
 model, criterion, optimizer, device = workspaceutils.nn_model(architecture, lr, hidden_units, epochs, mode)
                     
-workspaceutils.train_model (model, criterion, optimizer, device, epochs)
+workspaceutils.train_model (model, criterion, optimizer, device, train_loader, test_loader, epochs)
                     
 workspaceutils.save_checkpoint(filepath, architecture, hidden_units, lr, epochs)
                     
