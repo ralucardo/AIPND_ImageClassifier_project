@@ -144,7 +144,7 @@ def nn_model(architecture ='vgg19', lr = 0.001, hidden_units = 4096, epochs =4, 
 #input_layer, hidden_units, architecture, lr, classifier
 
 #function to train the model
-def train_model (model, criterion, optimizer, device,train_loader, epochs = 4):
+def train_model (model, criterion, optimizer, device,train_loader, test_loader, epochs = 4):
     steps = 0
     running_loss = 0
     print_every = 5
