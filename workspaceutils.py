@@ -103,10 +103,8 @@ def loading_data(path='data_dir'):
     valid_loader = torch.utils.data.DataLoader(valid_data, batch_size=64, shuffle = True)
     test_loader = torch.utils.data.DataLoader(test_data, batch_size=64)
     
-    return train_loader, valid_loader, test_loader
+    return train_loader, valid_loader, test_loader, train_data
 
-#with open('cat_to_name.json', 'r') as f:
-    #cat_to_name = json.load(f)
     
 #choose the model of the network
 def nn_model(architecture ='vgg19', lr = 0.001, hidden_units = 4096, epochs =4, mode = 'gpu'):
@@ -142,10 +140,9 @@ def nn_model(architecture ='vgg19', lr = 0.001, hidden_units = 4096, epochs =4, 
     
     return model, criterion, optimizer
 
-#input_layer, hidden_units, architecture, lr, classifier
 
 #function to train the model
-def train_model (model, criterion, optimizer, device, train_loader, test_loader, epochs = 4):
+def train_model (model, criterion, optimizer, train_loader, test_loader, valid_loader, train_data, epochs = 4):
     steps = 0
     running_loss = 0
     print_every = 5
@@ -168,19 +165,19 @@ def train_model (model, criterion, optimizer, device, train_loader, test_loader,
                 test_loss = 0
                 accuracy = 0
                 model.eval()
-                with torch.no_grad():
-                    for inputs, labels in test_loader :
-                        inputs, labels = inputs.to('cuda'), labels.to('cuda')
-                        logps = model.forward(inputs)
-                        batch_loss = criterion(logps, labels)
+                #with torch.no_grad():
+                for inputs, labels in test_loader :
+                    inputs, labels = inputs.to('cuda'), labels.to('cuda')
+                    logps = model.forward(inputs)
+                    batch_loss = criterion(logps, labels)
                     
-                        test_loss += batch_loss.item()
+                    test_loss += batch_loss.item()
                     
                     
-                        ps = torch.exp(logps)
-                        top_p, top_class = ps.topk(1, dim=1)
-                        equals = top_class == labels.view(*top_class.shape)
-                        accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
+                    ps = torch.exp(logps)
+                    top_p, top_class = ps.topk(1, dim=1)
+                    equals = top_class == labels.view(*top_class.shape)
+                    accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
                     
                 print(f"Epoch {epoch+1}/{epochs}.. "
                   f"Train loss: {running_loss/print_every:.3f}.. "
@@ -190,7 +187,7 @@ def train_model (model, criterion, optimizer, device, train_loader, test_loader,
                 model.train()
 
 #function to save the training of the network
-def save_checkpoint(filepath = 'checkpoint.pth',architecture ='vgg19',hidden_units = 25088, lr = 0.001, epochs = 4 ):
+def save_checkpoint(filepath = 'checkpoint.pth',architecture ='vgg19',hidden_units = 25088, lr = 0.001, epochs = 4):
     model.class_to_idx = train_data.class_to_idx
     model.cpu
     checkpoint = {'input_size': input_layer,
