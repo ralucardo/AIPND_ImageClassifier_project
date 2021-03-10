@@ -68,8 +68,8 @@ def keep_awake(iterable, delay=DELAY, interval=INTERVAL):
 
 #fonction pour charger les données
 
-def loading_data(path='data_dir'):
-    data_dir = 'flowers'
+def loading_data(path):
+    data_dir = path
     train_dir = data_dir + '/train'
     valid_dir = data_dir + '/valid'
     test_dir = data_dir + '/test'        
@@ -142,7 +142,7 @@ def nn_model(architecture ='vgg19', lr = 0.001, hidden_units = 4096, epochs =4, 
 
 
 #function to train the model
-def train_model (model, criterion, optimizer, train_loader, test_loader, valid_loader, train_data, epochs = 4):
+def train_model (model, criterion, optimizer, train_loader, test_loader, valid_loader,epochs = 4):
     steps = 0
     running_loss = 0
     print_every = 5
@@ -187,7 +187,7 @@ def train_model (model, criterion, optimizer, train_loader, test_loader, valid_l
                 model.train()
 
 #function to save the training of the network
-def save_checkpoint(filepath = 'checkpoint.pth',architecture ='vgg19',hidden_units = 25088, lr = 0.001, epochs = 4):
+def save_checkpoint(filepath, train_data, architecture ='vgg19',hidden_units = 25088, lr = 0.001, epochs = 4):
     model.class_to_idx = train_data.class_to_idx
     model.cpu
     checkpoint = {'input_size': input_layer,
