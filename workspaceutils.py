@@ -138,11 +138,11 @@ def nn_model(architecture ='vgg19', lr = 0.001, hidden_units = 4096, epochs =4, 
     if torch.cuda.is_available() and mode == 'gpu':
         model.cuda()
     
-    return model, criterion, optimizer
+    return model, criterion, optimizer, classifier
 
 
 #function to train the model
-def train_model (model, criterion, optimizer, train_loader, test_loader, valid_loader,epochs = 4):
+def train_model (model, criterion, optimizer, train_data, train_loader, test_loader, valid_loader,epochs = 4):
     steps = 0
     running_loss = 0
     print_every = 5
@@ -185,12 +185,13 @@ def train_model (model, criterion, optimizer, train_loader, test_loader, valid_l
                   f"Test accuracy: {accuracy/len(test_loader):.3f}")
                 running_loss = 0
                 model.train()
-
+                
+    
 #function to save the training of the network
-def save_checkpoint(filepath, train_data, architecture ='vgg19',hidden_units = 25088, lr = 0.001, epochs = 4):
+def save_checkpoint(filepath, model,optimizer, classifier, train_data, architecture ='vgg19',hidden_units = 25088, lr = 0.001, epochs = 4):
     model.class_to_idx = train_data.class_to_idx
     model.cpu
-    checkpoint = {'input_size': input_layer,
+    checkpoint = {
               'hidden_units': hidden_units,
               'output_size': 102,
               'epochs': epochs,
@@ -241,7 +242,7 @@ def process_image(image_path):
 #function to predict
 
 def predict(image_path, model, topk=5, mode = 'gpu'):
-    ''' Predict the class (or classes) of an image using a trained deep learning model.
+    ''' Predict the class of an image using a trained deep learning model.
     '''   
     model.to(device)
     img_torch = process_image(image_path)

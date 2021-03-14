@@ -44,10 +44,10 @@ architecture = args.architecture
 filepath = args.filepath
                     
 train_loader, valid_loader, test_loader, train_data = workspaceutils.loading_data(path)
-model, criterion, optimizer = workspaceutils.nn_model(architecture, lr, hidden_units, epochs, mode)
+model, criterion, optimizer, classifier = workspaceutils.nn_model(architecture, lr, hidden_units, epochs, mode)
                     
 workspaceutils.train_model (model, criterion, optimizer, train_loader, test_loader, valid_loader, epochs)
                     
-workspaceutils.save_checkpoint(filepath, architecture, hidden_units, lr, epochs)
+workspaceutils.save_checkpoint(filepath, model, optimizer,classifier, train_data, architecture, hidden_units, lr, epochs)
                     
 print("model trained I hope...")
